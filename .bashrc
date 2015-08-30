@@ -91,6 +91,35 @@ alias screened='screen -d -r -U'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+getssl(){
+if [ "$#" -ge 1 -a "$#" -le 2 ]; then
+	if [ $1 = "-long" -a "$#" = 2 ]; then
+		if [[ $2 == *":"* ]]; then
+			openssl s_client -connect $2 </dev/null
+		else
+			echo "you forgot to put a port, idiot!"
+			return 1
+		fi
+	fi
+
+	if [ "$#" = 1 ]; then
+		if [[ $1 == *":"* ]]; then
+			openssl s_client -connect $1 </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+		else
+			echo "you forgot to put a port, idiot!"
+			return 1
+		fi
+	fi
+return 0
+
+fi
+
+echo "Illegal number of parameters"
+echo "-----Usage-----"
+echo "getssl server.com:443 		- get only the certificate"
+echo "getssl -long server.com:443	- get all info including cert"
+}
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -107,7 +136,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 alias tmux='tmux -2'
-alias ducks='du -cksh * | sort -rn | head'
+
 #goodenough.jpg
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
