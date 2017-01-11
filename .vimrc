@@ -8,7 +8,14 @@ set expandtab
 set tabstop=4
 set shiftwidth=4
 
-
+"open nerdtree if no files are specified when opening vim
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+"and make nerd tree open with f3 and preview with f4
+silent! nmap <C-p> :NERDTreeToggle<CR>
+silent! map <F3> :NERDTreeFind<CR>
+let g:NERDTreeMapActivateNode="<F3>"
+let g:NERDTreeMapPreview="<F4>"
 
 "auto save folding and restore it
 autocmd BufWinLeave *.* mkview
